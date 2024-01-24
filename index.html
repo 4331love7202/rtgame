@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>거북이와 토끼 게임</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      padding: 10px;
+    }
+    #buttons {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+    #hero-container {
+      background-color: blue;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    #betting-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>거북이와 토끼 게임</h1>
+  <label for="player1Prediction">플레이어 1의 예측 (거북이 또는 토끼): </label>
+  <select id="player1Prediction">
+    <option value="turtle">거북이</option>
+    <option value="rabbit">토끼</option>
+  </select>
+  <label for="player2Prediction">플레이어 2의 예측 (거북이 또는 토끼): </label>
+  <select id="player2Prediction">
+    <option value="turtle">거북이</option>
+    <option value="rabbit">토끼</option>
+  </select>
+  <div id="betting-container">
+    <label for="betAmount">배팅 금액 (1만원부터 10만원): </label>
+    <input type="number" id="betAmount" min="10000" max="100000" step="10000" placeholder="1만원 이상 10만원 이하">
+  </div>
+  <button onclick="playGame()">예측하기</button>
+  <div id="result"></div>
+  <div id="buttons">
+    <button onclick="deposit()">입금</button>
+    <button onclick="withdraw()">출금</button>
+  </div>
+  <div id="hero-container">
+    <!-- 여기에 히어로 이미지 또는 내용을 추가하세요. -->
+    <!-- 예를 들면 <img src="hero-image.jpg" alt="Hero Image"> -->
+  </div>
+  <script>
+    var accountBalances = {
+      player1: 100000,
+      player2: 100000
+    };
+    function updateBalance(player) {
+      document.getElementById(player + 'Balance').innerText = accountBalances[player];
+    }
+    function playGame() {
+      var player1Prediction = document.getElementById('player1Prediction').value;
+      var player2Prediction = document.getElementById('player2Prediction').value;
+      var betAmount = parseInt(document.getElementById('betAmount').value);
+      // 배팅금액이 유효한 범위인지 확인
+      if (isNaN(betAmount) || betAmount < 10000 || betAmount > 100000) {
+        alert('배팅 금액은 1만원부터 10만원 사이어야 합니다.');
+        return;
+      }
+      // 랜덤으로 거북이 또는 토끼 중 하나를 선택
+      var animals = ['turtle', 'rabbit'];
+      var destination = animals[Math.floor(Math.random() * animals.length)];
+      var resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '플레이어 1의 예측: ' + player1Prediction + '<br>';
+      resultDiv.innerHTML += '플레이어 2의 예측: ' + player2Prediction + '<br>';
+      resultDiv.innerHTML += '도착한 동물: ' + destination + '<br>';
+      if (player1Prediction === destination && player2Prediction === destination) {
+        var winnings = betAmount * 2;
+        accountBalances.player1 += winnings;
+        accountBalances.player2 += winnings;
+        resultDiv.innerHTML += '<br>두 플레이어가 맞춰서 ' + winnings + '원을 획득하셨습니다.';
+      } else {
+        accountBalances.player1 -= betAmount;
+        accountBalances.player2 -= betAmount;
+        resultDiv.innerHTML += '<br>플레이어 중 적어도 한 명이 틀려서 ' + betAmount + '원을 잃었습니다. 다음 기회에 도전하세요.';
+      }
+      // 이미지 배경 색상 변경
+      var color = getRandomColor();
+      resultDiv.style.backgroundColor = color;
+      updateBalance('player1');
+      updateBalance('player2');
+    }
+    function deposit() {
+      var player = prompt('입금할 플레이어를 선택하세요 (player1 또는 player2):');
+      var depositAmount = parseInt(prompt('입금할 금액을 입력하세요:'));
+      if (isNaN(depositAmount) || depositAmount <= 0) {
+        alert('올바른 금액을 입력하세요.');
+        return;
+      }
+      accountBalances[player] += depositAmount;
+      updateBalance(player);
+    }
+    function withdraw() {
+      var player = prompt('출금할 플레이어를 선택하세요 (player1 또는 player2):');
+      var withdrawAmount = parseInt(prompt('출금할 금액을 입력하세요:'));
+      if (isNaN(withdrawAmount) || withdrawAmount <= 0 || withdrawAmount > accountBalances[player]) {
+        alert('올바른 금액을 입력하세요.');
+        return;
+      }
+      accountBalances[player] -= withdrawAmount;
+      updateBalance(player);
+    }
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+  </script>
+  <h2>플레이어 1 잔액: <span id="player1Balance">100000</span>원</h2>
+  <
+
